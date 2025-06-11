@@ -19,3 +19,5 @@ def case_insensitive_apply(stringA: str, stringB: str, func: Callable[[str, str]
         True
     """
     return func(stringA.lower(), stringB.lower())
+
+
