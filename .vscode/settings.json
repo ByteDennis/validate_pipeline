@@ -1,0 +1,8 @@
+{
+    "python.defaultInterpreterPath": "/Users/dennis/Documents/Jobs/Migration/.venv/bin/python",
+    "python.testing.pytestArgs": [
+        "-s", "package_tests"
+    ],
+    "python.testing.unittestEnabled": false,
+    "python.testing.pytestEnabled": true
+}
