@@ -1,8 +1,10 @@
 {
-    "python.defaultInterpreterPath": "/Users/dennis/Documents/Jobs/Migration/.venv/bin/python",
+    "python.defaultInterpreterPath": "/home/dennis/.pyenv/shims/python",
     "python.testing.pytestArgs": [
         "-s", "package_tests"
     ],
     "python.testing.unittestEnabled": false,
-    "python.testing.pytestEnabled": true
+    "python.testing.pytestEnabled": true,
+    "python-envs.defaultEnvManager": "ms-python.python:venv",
+    "python-envs.pythonProjects": []
 }

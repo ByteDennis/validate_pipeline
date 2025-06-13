@@ -612,6 +612,50 @@ def create_sample_queries():
     
     return oracle_queries, athena_queries
 
+def map_oracledb_type(db_type, precision, scale, size):
+    """Compact Oracle type mapping"""
+    
+    # Basic type mapping
+    type_map = {
+        oracledb.DB_TYPE_VARCHAR: f"VARCHAR2({size})" if size else "VARCHAR2",
+        oracledb.DB_TYPE_NVARCHAR: f"NVARCHAR2({size})" if size else "NVARCHAR2", 
+        oracledb.DB_TYPE_CHAR: f"CHAR({size})" if size else "CHAR",
+        oracledb.DB_TYPE_NCHAR: f"NCHAR({size})" if size else "NCHAR",
+        oracledb.DB_TYPE_DATE: "DATE",
+        oracledb.DB_TYPE_TIMESTAMP: f"TIMESTAMP({precision})" if precision else "TIMESTAMP",
+        oracledb.DB_TYPE_TIMESTAMP_LTZ: "TIMESTAMP WITH LOCAL TIME ZONE",
+        oracledb.DB_TYPE_TIMESTAMP_TZ: "TIMESTAMP WITH TIME ZONE",
+        oracledb.DB_TYPE_INTERVAL_DS: "INTERVAL DAY TO SECOND",
+        oracledb.DB_TYPE_INTERVAL_YM: "INTERVAL YEAR TO MONTH",
+        oracledb.DB_TYPE_CLOB: "CLOB",
+        oracledb.DB_TYPE_NCLOB: "NCLOB",
+        oracledb.DB_TYPE_BLOB: "BLOB",
+        oracledb.DB_TYPE_RAW: f"RAW({size})" if size else "RAW",
+        oracledb.DB_TYPE_LONG: "LONG",
+        oracledb.DB_TYPE_LONG_RAW: "LONG RAW",
+        oracledb.DB_TYPE_ROWID: "ROWID",
+        oracledb.DB_TYPE_UROWID: "UROWID",
+        oracledb.DB_TYPE_BINARY_FLOAT: "BINARY_FLOAT",
+        oracledb.DB_TYPE_BINARY_DOUBLE: "BINARY_DOUBLE",
+        oracledb.DB_TYPE_BOOLEAN: "BOOLEAN"
+    }
+    
+    # Handle NUMBER type specially
+    if db_type == oracledb.DB_TYPE_NUMBER:
+        if precision and scale is not None:
+            return f"NUMBER({precision},{scale})" if scale > 0 else f"NUMBER({precision})"
+        return f"NUMBER({precision})" if precision else "NUMBER"
+    
+    return type_map.get(db_type, f"UNKNOWN({db_type})")
+
+def oracle_infer(cursor):
+    """Simple one-liner for oracledb to infer column data type"""
+    return {
+        desc.name: map_oracledb_type(desc.type_code, desc.precision, desc.scale, desc.internal_size)
+        for desc in cursor.description
+    }
+
+
 
 def main():
     """Main function demonstrating usage"""
